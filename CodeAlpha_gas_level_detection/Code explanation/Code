@@ -1,0 +1,49 @@
+#include <LiquidCrystal.h>
+
+// LCD pins: RS, E, D4, D5, D6, D7
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const int gasPin = A0;
+const int ledPin = 6;
+const int buzzerPin = 7;
+
+int gasValue;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  lcd.begin(16, 2);
+  lcd.print("Gas Detector");
+  delay(2000);
+  lcd.clear();
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  gasValue = analogRead(gasPin);
+
+  Serial.print("Gas Level: ");
+  Serial.println(gasValue);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Gas Level:    ");
+  lcd.setCursor(0, 1);
+  lcd.print(gasValue);
+  lcd.print("     ");
+
+  if (gasValue > 550) {   // Adjust if needed
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    lcd.setCursor(11, 0);
+    lcd.print("ALRT");
+  } else {
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzerPin, LOW);
+    lcd.setCursor(11, 0);
+    lcd.print("SAFE");
+  }
+
+delay(500);
+}
